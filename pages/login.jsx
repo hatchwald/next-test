@@ -2,7 +2,8 @@ import Head from "next/head"
 import styles from "../styles/Home.module.css"
 import ReactDOM from "react-dom"
 import React, { useState } from 'react';
-import { ToastProvider, useToasts } from 'react-toast-notifications'
+import { ToastContainer, toast } from "react-toastify"
+
 
 export default function Login() {
 
@@ -50,30 +51,40 @@ export default function Login() {
 
 
 
-        postData("http://localhost:3000/login", { "username": "kyle", "password": "some" }).then(data => {
+        postData("http://localhost:3000/login", { "username": username.username, "password": username.password }).then(data => {
             if (data.code != 200) {
-                console.log("error happen")
+                const code = data.code
                 data.data.then(data => {
+                    toast.error(`${code} ${data.message}`)
+                    console.log(username)
                     setLoader({ class: "", attribute: false, loading: "hidden" })
                 })
             } else {
+                toast.success("success Login")
                 //    
             }
 
         }).catch(err => {
-            alert("error get data")
-            console.log(err)
+            console.log(username)
+            // alert("error get data")
+            toast.error(`500 ${err}`)
             setLoader({ class: "", attribute: false, loading: "hidden" })
         })
 
     }
+
     return (
         <div className={styles.container}>
             <Head>
                 <title>Login Page </title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+
             <div className="w-full max-w-xs">
+                <div>
+                    <ToastContainer />
+                </div>
+
                 <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={submit_login}>
                     <fieldset disabled={loader.attribute}>
 
